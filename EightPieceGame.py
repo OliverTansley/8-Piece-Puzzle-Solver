@@ -1,3 +1,12 @@
+'''EightPieceGame:
+
+An implementation of a puzzle game in which the player must reorganise numbers in a grid to match a certain pattern
+
+An abstraction has been made in which the empty piece (represented by a zero) can be moved rather than every other piece. 
+this is to reduce complexity for the player as only a direction to move the empty piece must be selected in order to play
+
+'''
+
 
 class GameBoard:
 
@@ -26,6 +35,8 @@ class GameBoard:
     def checkWin(self) -> bool:
         return self.pieces == GameBoard.winState
 
+    # Movement Functions
+
     def moveLeft(self) -> None:
         if self.emptyX != 0:
             self.pieces[self.emptyY][self.emptyX] = self.pieces[self.emptyY][self.emptyX - 1]
@@ -53,7 +64,7 @@ class GameBoard:
 
 def Main() -> None:
     board = GameBoard()
-    while board.checkWin() != True:
+    while board.checkWin() != True:  # Main Game Loop
         board.show()
         move = input("Use WASD to move empty piece:\n")
         if move == "w":
