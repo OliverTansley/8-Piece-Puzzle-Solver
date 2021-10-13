@@ -18,3 +18,13 @@
 - completeness: yes
 - optimal: yes
 - SearchMethod: Breadth first Search
+
+## Functionality
+
+A breadth first search is used to generate the state space tree. The following actions can be applied to any particular state:
+
+- moveUp
+- moveDown
+- moveRight
+- moveLeft
+

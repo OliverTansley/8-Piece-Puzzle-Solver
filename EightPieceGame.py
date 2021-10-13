@@ -23,11 +23,14 @@ class GameBoard:
                            [5, 8, 4],
                            [7, 6, 0], ]
 
-        for i in range(0, 3):
-            for j in range(0, 3):
-                if self.pieces[i][j] == 0:
-                    self.emptyX = j
-                    self.emptyY = i
+        # for i in range(0, 3):
+        #     for j in range(0, 3):
+        #         if self.pieces[i][j] == 0:
+        #             self.emptyX = j
+        #             self.emptyY = i
+
+        self.emptyY = 2
+        self.emptyX = 2
 
     def show(self) -> None:
         print("-------------")
@@ -47,15 +50,11 @@ class GameBoard:
             self.pieces[self.emptyY][self.emptyX - 1] = 0
             self.emptyX -= 1
 
-            return GameBoard(self.pieces)
-
     def moveRight(self):
         if self.emptyX != 2:
             self.pieces[self.emptyY][self.emptyX] = self.pieces[self.emptyY][self.emptyX + 1]
             self.pieces[self.emptyY][self.emptyX + 1] = 0
             self.emptyX += 1
-
-            return GameBoard(self.pieces)
 
     def moveUp(self):
         if self.emptyY != 0:
@@ -63,19 +62,15 @@ class GameBoard:
             self.pieces[self.emptyY-1][self.emptyX] = 0
             self.emptyY -= 1
 
-            return GameBoard(self.pieces)
-
     def moveDown(self):
         if self.emptyY != 2:
             self.pieces[self.emptyY][self.emptyX] = self.pieces[self.emptyY + 1][self.emptyX]
             self.pieces[self.emptyY + 1][self.emptyX] = 0
             self.emptyY += 1
 
-            return GameBoard(self.pieces)
-
 
 def Main() -> None:
-    board = GameBoard()
+    board = GameBoard([])
     while board.checkWin() != True:  # Main Game Loop
         board.show()
         move = input("Use WASD to move empty piece:\n")
@@ -92,7 +87,7 @@ def Main() -> None:
 
 
 if __name__ == "__main__":
+
     board = GameBoard(None)
-    Sol = EightPieceSolver.Solve(board, board.winState,
-                                 [board.moveUp, board.moveDown, board.moveLeft, board.moveRight])
+    Sol = EightPieceSolver.Solve(board, board.winState, ["w", "a", "s", "d"])
     print(Sol)
