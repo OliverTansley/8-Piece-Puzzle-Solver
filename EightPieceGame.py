@@ -8,6 +8,7 @@ this is to reduce complexity for the player as only a direction to move the empt
 '''
 
 import EightPieceSolver
+import time
 
 
 class GameBoard:
@@ -20,17 +21,14 @@ class GameBoard:
         self.pieces = arr
         if arr == None or arr == []:
             self.pieces = [[1, 2, 3],
-                           [5, 8, 4],
-                           [7, 6, 0], ]
+                           [8, 4, 5],
+                           [7, 0, 6], ]
 
-        # for i in range(0, 3):
-        #     for j in range(0, 3):
-        #         if self.pieces[i][j] == 0:
-        #             self.emptyX = j
-        #             self.emptyY = i
-
-        self.emptyY = 2
-        self.emptyX = 2
+        for i in range(0, 3):
+            for j in range(0, 3):
+                if self.pieces[i][j] == 0:
+                    self.emptyX = j
+                    self.emptyY = i
 
     def show(self) -> None:
         print("-------------")
@@ -69,25 +67,36 @@ class GameBoard:
             self.emptyY += 1
 
 
+def playMove(move, board):
+    if move == "w":
+        board.moveUp()
+    if move == "a":
+        board.moveLeft()
+    if move == "s":
+        board.moveDown()
+    if move == "d":
+        board.moveRight()
+
+
 def Main() -> None:
     board = GameBoard([])
-    while board.checkWin() != True:  # Main Game Loop
+    move = ""
+    while board.checkWin() != True and move != "solve":  # Main Game Loop
         board.show()
-        move = input("Use WASD to move empty piece:\n")
-        if move == "w":
-            board.moveUp()
-        if move == "a":
-            board.moveLeft()
-        if move == "s":
-            board.moveDown()
-        if move == "d":
-            board.moveRight()
+        move = input("Use WASD to move empty piece type 'solve' to finish:\n")
+        playMove(move, board)
+
+    if move == "solve":
+        solution = EightPieceSolver.Solve(
+            board, board.winState, ["w", "a", "s", "d"])
+        for step in solution:
+            board.show()
+            time.sleep(0.75)
+            playMove(step, board)
+
     board.show()
     print("Congrats you win!\n")
 
 
 if __name__ == "__main__":
-
-    board = GameBoard(None)
-    Sol = EightPieceSolver.Solve(board, board.winState, ["w", "a", "s", "d"])
-    print(Sol)
+    Main()
