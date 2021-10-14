@@ -1,11 +1,21 @@
+'''EightPieceSolver'''
+
+
 from EightPieceGame import GameBoard
-import copy
-
-'''StateSpaceNode contains one state in the StateSpaceTree'''
+from copy import deepcopy
 
 
-class stateNode:
+'''StateNode: Contains one state of the StateSpaceTree
 
+state: The current state of the world
+parent: The previous state of the world
+depth: The depth of the node in the StateSpaceTree
+'''
+
+
+class StateNode:
+
+    # Constructor
     def __init__(self, state, parent, depth, previous):
         self.state = state
         self.parent = parent
@@ -14,21 +24,22 @@ class stateNode:
         self.prevAction = previous
 
 
-'''StateSpaceTree Holds all necessary states to solve GameBoard'''
+'''StateSpaceTree: Contains the Root node of the StateSpaceTree'''
 
 
 class StateSpaceTree:
 
+    # Constructor
     def __init__(self, rootState):
-        self.root = stateNode(
+        self.root = StateNode(
             state=rootState, parent=None, depth=0, previous=None)
 
 
-'''gets new state for child node of node'''
+'''getChildState: Applys an action to the current state returning a new world state'''
 
 
-def getChildState(arr, action) -> GameBoard:
-    newPieces = copy.deepcopy(arr)
+def getChildState(state, action) -> GameBoard:
+    newPieces = deepcopy(state.pieces)
     newState = GameBoard(newPieces)
     if action == "w":
         newState.moveUp()
@@ -42,23 +53,25 @@ def getChildState(arr, action) -> GameBoard:
     return newState
 
 
-'''expand'''
+'''expand: Constructs full StateSpaceTree using breadthFirstSearch and returns node containing winstate'''
 
 
-def expand(currentNode, actions, winstate) -> stateNode:
+def expand(StateSpaceTree, actions, winstate) -> StateNode:
     q = []
-    q.append(currentNode)
+    q.append(StateSpaceTree)
     for node in q:
         for action in actions:
-            childState = getChildState(node.state.pieces, action)
-            childNode = stateNode(childState, node, node.depth + 1, action)
+            childState = getChildState(node.state, action)
+            childNode = StateNode(childState, node, node.depth + 1, action)
             node.children.append(childNode)
             q.append(childNode)
             if childNode.state.pieces == winstate:
                 return childNode
 
 
-'''Given a Gameboard, winstate, and possible actions returns a solution'''
+'''Given a Gameboard, desired state, and list of possible actions returns a solution
+This function can be thought of as the Agent.
+'''
 
 
 def Solve(board, winstate, actions) -> list:

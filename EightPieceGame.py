@@ -1,14 +1,20 @@
-'''EightPieceGame:
-
-An implementation of a puzzle game in which the player must reorganise numbers in a grid to match a certain pattern
-
-An abstraction has been made in which the empty piece (represented by a zero) can be moved rather than every other piece. 
-this is to reduce complexity for the player as only a direction to move the empty piece must be selected in order to play
-
-'''
+'''EightPieceGame'''
 
 import EightPieceSolver
-import time
+from time import sleep
+
+
+'''GameBoard Object
+Represents the puzzle game through a 2D array and implements functionality required to play.
+
+show: Displays the current state of the puzzle to the terminal.
+checkwin: determines if the game has been solved.
+movement: alters the contents of the puzzle to represent a single move.
+
+Constructor can take in array to build new GameBoard with predetermined contents used for solver.
+
+Location of empty piece is stored to improve efficiency (index's dont have to be found every time)
+'''
 
 
 class GameBoard:
@@ -18,17 +24,20 @@ class GameBoard:
                 [7, 6, 5], ]
 
     def __init__(self, arr):
-        self.pieces = arr
-        if arr == None or arr == []:
+        if arr:
+            self.pieces = arr
+            # Locate the empty peice
+            for i in range(0, 3):
+                for j in range(0, 3):
+                    if self.pieces[i][j] == 0:
+                        self.emptyX = j
+                        self.emptyY = i
+        else:
+            self.emptyX = 1
+            self.emptyY = 2
             self.pieces = [[1, 2, 3],
                            [8, 4, 5],
                            [7, 0, 6], ]
-
-        for i in range(0, 3):
-            for j in range(0, 3):
-                if self.pieces[i][j] == 0:
-                    self.emptyX = j
-                    self.emptyY = i
 
     def show(self) -> None:
         print("-------------")
@@ -40,42 +49,48 @@ class GameBoard:
     def checkWin(self) -> bool:
         return self.pieces == GameBoard.winState
 
-    # Movement Functions
+    ''' Movement Functions '''
 
-    def moveLeft(self):
+    def moveLeft(self) -> None:
         if self.emptyX != 0:
             self.pieces[self.emptyY][self.emptyX] = self.pieces[self.emptyY][self.emptyX - 1]
             self.pieces[self.emptyY][self.emptyX - 1] = 0
             self.emptyX -= 1
 
-    def moveRight(self):
+    def moveRight(self) -> None:
         if self.emptyX != 2:
             self.pieces[self.emptyY][self.emptyX] = self.pieces[self.emptyY][self.emptyX + 1]
             self.pieces[self.emptyY][self.emptyX + 1] = 0
             self.emptyX += 1
 
-    def moveUp(self):
+    def moveUp(self) -> None:
         if self.emptyY != 0:
             self.pieces[self.emptyY][self.emptyX] = self.pieces[self.emptyY - 1][self.emptyX]
             self.pieces[self.emptyY-1][self.emptyX] = 0
             self.emptyY -= 1
 
-    def moveDown(self):
+    def moveDown(self) -> None:
         if self.emptyY != 2:
             self.pieces[self.emptyY][self.emptyX] = self.pieces[self.emptyY + 1][self.emptyX]
             self.pieces[self.emptyY + 1][self.emptyX] = 0
             self.emptyY += 1
 
 
-def playMove(move, board):
-    if move == "w":
+'''playMove: maps input action to an intended board move'''
+
+
+def playMove(move, board) -> None:
+    if move.lower() == "w":
         board.moveUp()
-    if move == "a":
+    if move.lower() == "a":
         board.moveLeft()
-    if move == "s":
+    if move.lower() == "s":
         board.moveDown()
-    if move == "d":
+    if move.lower() == "d":
         board.moveRight()
+
+
+'''Main: Implements game loop, allowing for the user to input a move or for the AI to solve the puzzle from the current state.'''
 
 
 def Main() -> None:
@@ -86,16 +101,16 @@ def Main() -> None:
         move = input("Use WASD to move empty piece type 'solve' to finish:\n")
         playMove(move, board)
 
-    if move == "solve":
+    if move.lower() == "solve":  # Call AI to solve
         solution = EightPieceSolver.Solve(
             board, board.winState, ["w", "a", "s", "d"])
         for step in solution:
             board.show()
-            time.sleep(0.75)
+            sleep(0.75)
             playMove(step, board)
 
     board.show()
-    print("Congrats you win!\n")
+    print("Congrats you win!")
 
 
 if __name__ == "__main__":
