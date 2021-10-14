@@ -35,4 +35,4 @@ A breadth first search is used to generate the state space tree. The following a
 ## Efficiency
 
 - Time Complexity is order O(4^(d)), where d is the depth of the solution.
-- Space Complexity every node is kept in memory: O(b^d-1) explored, so space complexity is O(b^d).
+- Space Complexity every node is kept in memory: O(4^d-1) explored, so space complexity is O(4^d).
